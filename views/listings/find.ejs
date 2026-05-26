@@ -1,3 +1,42 @@
 <% layout("/layouts/boilerplate") %>
 
-<h1>har har mahadev</h1>
+<div class="mt-3">
+    <div class="explore-header">
+      <div>
+        <p class="section-kicker">Search results</p>
+        <h1><%= q ? q : "All listings" %></h1>
+      </div>
+      <a href="/listings/new" class="btn primary-action">
+        <i class="fa-solid fa-plus"></i>
+        Add Listing
+      </a>
+    </div>
+    <hr>
+
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mt-2"> 
+        <% if(allListings.length > 0) { %>
+            <% for(let listing of allListings) { %>
+              <a href="/listings/<%= listing._id %>" class="listing-link col">
+                <article class="card listing-card">
+                  <div class="listing-media">
+                    <img src="<%= listing.image && listing.image.url ? listing.image.url : 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=60' %>" class="card-img-top listing-img" alt="<%= listing.title %>">
+                    <span class="listing-badge">Available</span>
+                  </div>
+                    <div class="card-body">
+                      <div class="listing-title-row">
+                        <b><%= listing.title %></b>
+                        <span><i class="fa-solid fa-star"></i> 4.8</span>
+                      </div>
+                      <p class="listing-location"><%= listing.location %>, <%= listing.country %></p>
+                      <p class="card-text listing-price">&#8377; <%= listing.price.toLocaleString("en-IN") %> <span>/ night</span></p>
+                    </div>
+                </article>
+              </a>
+            <% } %>
+        <% } else { %>
+            <div class="alert alert-danger w-100" role="alert">
+                 This Listing is not found!
+            </div>
+        <% } %>
+    </div>
+</div>

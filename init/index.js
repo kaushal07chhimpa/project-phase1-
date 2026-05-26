@@ -3,8 +3,11 @@ const initData = require("./data.js");
 const Listing = require("../models/listing.js"); 
 
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; 
- 
+//const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust"; 
+const ATLASDB_URL = "mongodb+srv://kaushalchhimpa_db_user:43TzfKNPnGbJbp6r@cluster0.lvhdqe1.mongodb.net/?appName=Cluster0 X"; 
+  
+
+
 main()
 .then(() => {
     console.log("connected to DB"); 
@@ -15,7 +18,7 @@ main()
 
 
 async function main() {
-  await mongoose.connect(MONGO_URL);
+  await mongoose.connect(ATLASDB_URL); 
 }
 
 const initDB = async () => {

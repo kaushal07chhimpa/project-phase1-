@@ -48,6 +48,11 @@ const geoData = await geoRes.json();
 
     console.log(response.body); 
 
+    if (!req.file) {
+      req.flash("error", "Please upload a listing image.");
+      return res.redirect("/listings/new");
+    }
+
     let url = req.file.path; 
     let filename = req.file.filename; 
    // console.log(url, "..", filename); 
@@ -55,7 +60,7 @@ const geoData = await geoRes.json();
    const newListing = new Listing(req.body.listing); 
   // console.log(req.user); 
 
-   newListing.geometry = response.body.features[0].geometry;
+   newListing.geometry = response.body.features[0]?.geometry || { type: "Point", coordinates: [0, 0] };
 
    newListing.owner = req.user._id; 
    newListing.image = {url, filename};  

@@ -1,7 +1,6 @@
 <% layout("/layouts/boilerplate") %>
-<body>
   <div class="row">
-    <div class="col-8 offset-2">
+    <div class="col-12 col-md-8 offset-md-2">
       <br />
       <br />
       <h2>Create a New Listing</h2>
@@ -47,8 +46,8 @@
         </div> -->
         <div class="mb-3">
           <label for="image" class="form-label">Upload Listing Image</label>
-          <input name="listing[image][url]" type="file" class="form-control" />
-          required
+          <input name="listing[image][url]" type="file" class="form-control" required />
+          <div class="invalid-feedback">Please upload a listing image</div>
         </div>
         <div class="row">
           <div class="mb-3 col-md-4">
@@ -92,4 +91,3 @@
     </div>
   </div>
   <!-- <script src="/js/script.js"></script> -->
-</body>

@@ -7,7 +7,7 @@ if(process.env.NODE_ENV != "production") {
 const express = require("express"); 
 const app = express(); 
 const mongoose = require("mongoose"); 
-//const Listing = require("./models/listing.js"); 
+const Listing = require("./models/listing.js"); 
 const path = require("path"); 
 const methodOverride = require("method-override"); 
 const ejsMate = require("ejs-mate"); 
@@ -23,15 +23,10 @@ const LocalStrategy = require("passport-local");
 const User = require("./models/user.js"); 
 
 
+
 const listingsRouter = require("./routes/listing.js");  
 const reviewsRouter = require("./routes/review.js"); 
 const userRouter = require("./routes/user.js");  
-
- 
-async function main() {
-    await mongoose.connect(dbUrl); 
-}
-
 
 app.set("view engine", "ejs"); 
 app.set("views", path.join(__dirname, "views")); 
@@ -41,7 +36,8 @@ app.engine('ejs', ejsMate);
 app.use(express.static(path.join(__dirname,"/public"))); 
 
 
-const dbUrl = process.env.ATLASDB_URL; 
+const dbUrl = process.env.ATLASDB_URL;  
+//const dbUrl = process.env.MONGO_URL;  
 
 const store = MongoStore.create({
     mongoUrl: dbUrl,
@@ -52,7 +48,7 @@ const store = MongoStore.create({
 });
 
 
-store.on("error", () => {
+store.on("error", (err) => {
     console.log("ERROR in MONGO SESSION STORE", err); 
 }); 
 
@@ -161,10 +157,49 @@ app.use("/listings/:id/reviews", reviewsRouter);
 app.use("/", userRouter);  
 
 
+
+
+
+
+
+
+// app.get("/listing/find", async (req, res) => {
+//       res.render("listings/find.ejs"); 
+// });
+
 app.get("/listing/find", async (req, res) => {
-      res.render("listings/find.ejs"); 
+    try {
+        let { q } = req.query; // Form se aayi hui search query
+        
+        let allListings = [];
+        if (q) {
+            // Yeh query location ya title dono mein se kisi ek mein bhi match dhoondhegi (Case-Insensitive)
+            allListings = await Listing.find({
+                $or: [
+                    { location: { $regex: q, $options: "i" } },
+                    { title: { $regex: q, $options: "i" } }
+                ]
+            });
+        } else {
+            // Agar bina kuch type kiye search kiya toh saari listings dikha dega
+            allListings = await Listing.find({});
+        }
+
+        // Matched data ko find.ejs page par bhej rahe hain
+        res.render("listings/find.ejs", { allListings, q });
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Server Error");
+    }
 });
  
+
+
+
+
+
+
+
 
 
 
